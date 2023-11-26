@@ -1,0 +1,53 @@
+//ACTIVIDAD CLASE
+
+const registrarEstudiantes = () => {
+    console.log("Iniciando registro de estudiantes");
+    
+    let cantidadEstudiantes = prompt("Ingrese la cantidad de estudiantes que seran registrados: ")
+    console.log("Cantidad de estudiantes a registrar: " + cantidadEstudiantes)
+    
+    let estudiantes = [];
+    
+    for(let i = 0; i < cantidadEstudiantes; i++){
+        let nombre = prompt("Ingrese nombre del estudiante " + i + ": ")
+        
+        let edad = prompt("Ingrese edad de "+ nombre +" : ")
+        
+        let estudiante = {
+            nombre: nombre,
+            edad: edad
+        }
+        
+        estudiantes.push(estudiante);
+    }
+    
+    return estudiantes;
+    
+}
+
+const mostrarListaEstudiantes = (estudiantes) => {
+    console.log("Lista de estudiantes sregistrados: ");
+    for(let i = 0; i < estudiantes.length; i++){
+        let estudianteActual = estudiantes[i];
+        console.log("Nombre: " + estudianteActual.nombre + ", Edad: "+ estudianteActual.edad);
+    }
+}
+
+let estudiantesRegistrados = registrarEstudiantes();
+
+mostrarListaEstudiantes(estudiantesRegistrados);
+
+//ACTIVIDAD TAREA
+
+const calcularPromedio = (numeros) => { 
+    let suma = 0;
+    for(let i=0; i<numeros.length; i++){
+        suma  = suma + numeros[i];       
+    }
+    let promedio = suma/numeros.length;
+    return promedio;
+}
+
+let numeros = [1,7,10,20,23,27,29];
+let promedio = calcularPromedio(numeros);
+console.log("El promedio de los valores del arreglo es = "+promedio);
