@@ -1,33 +1,93 @@
 const express = require('express');
-const routerProductos = express.Router();
+const route = express.Router();
 
-routerProductos.put('/', (req, res) => {
-    res.send('Producto modificado correctamente');
-}); 
+//Datos que yo invento, simulando una base de datos
+let productos = [
+    {id: 1, nombre: "Producto 1", precio: 10.99},
+    {id: 2, nombre: "Producto 2", precio: 19.99},
+    {id: 3, nombre: "Producto 3", precio: 5.99},
+];
 
-routerProductos.get('/:id', (req,res) => {
-    const productoId = req.params.id;                                                           //path parameters
-    res.send(`Informacion del producto con id "${productoId}"`);
-});
-
-routerProductos.post('/', (req, res) => {
-    const producto = req.body                                                                   //body parameters
-    // Aquí puedes guardar el nuevo producto en la base de datos o realizar otras operaciones relacionadas con el producto
-    res.send(`Guardar nuevo producto: "${JSON.stringify(producto)}"`);
-});
-
-/*routerProductos.get('/', (req, res) => {
-    const authToken = req.header('Authorization');                                              //header parameters
-    // Aquí puedes usar el authToken para autenticar al usuario o realizar validaciones adicionales 
-    res.send(`Token de autorización: ${authToken}`);
-});*/
-
-routerProductos.get('/', (req, res) => {
-    const productos = [
-        { id: 1, nombre: 'Tablet'},
-        { id: 2, nombre: 'PC'}
-        ];
+//Obtengo TODOS los datos
+route.get('/', (req, res, next) =>{
+   try{ 
         res.json(productos);
+   }catch(err){
+        next(err);
+   }
 });
 
-module.exports = routerProductos;
+//Obtengo datos por ID
+route.get('/:id', (req, res, next) => {
+    try{
+    const id = parseInt(req.params.id);
+    const producto = productos.find((p) => p.id === p); //productos es un array. Find recibe como parametro cada prod y compara
+
+    if(!producto){
+        const error = new Error('Producto no encontrado');  
+        error.status = 404;
+        throw error;
+    }
+    res.json(producto);
+    
+}catch(err){
+    next(err);
+}
+});
+
+route.post('/', (req, res, next) => {
+    try{
+    const {nombre, precio} = req.body;
+
+    const nuevoProducto = {
+        id: productos.length + 1,
+        nombre,
+        precio,
+    };
+
+    productos.push(nuevoProducto);
+    res.status(201).json(nuevoProducto);
+    }catch(err){
+    next(err);
+    }
+});
+
+//Actualizar un producto existente
+route.put('/:id', (req, res, next) => {
+    try {
+        const id = parseInt(req.params.id);
+        const {nombre, precio} = req.body;
+
+        const producto = productos.find((p) => p.id === p);
+        if(!producto){
+            const error = new Error('Producto no encontrado');  
+            error.status = 404;
+            throw error;
+        }
+        producto.nombre = nombre || producto.nombre;
+        producto.precio = nombre || producto.precio;
+
+        res.json(producto);
+    }  catch (err) {
+        next(err);
+    }
+    
+});
+
+//Eliminar un producto
+route.delete('/:id', (req, res, next) => {
+    try {
+
+        if(index === -1){
+            const error = new Error('Producto no encontrado');  
+            error.status = 404;
+            throw error;
+        }
+        const productoEliminado = productos.splice(index, 1);
+        res.json(productoEliminado(0));
+    } catch (err) {
+        next(err);
+    }
+});
+
+module.exports = route;

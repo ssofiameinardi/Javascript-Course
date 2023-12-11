@@ -1,16 +1,14 @@
 const express = require('express');
 const app = express();
-const routerProductos = require('./routes/productos');
+const routeProductos = require("./routes/productos");
+const errorHandler = require("./middlewares/errorHandler");
 
 app.use(express.json()); //para el body parameters
 
-app.get('/', (req, res) => {
-    res.send('Hola, Mundo');
-});
+app.use('/productos', routeProductos)
 
+app.use(errorHandler);
 
-
-app.use('/productos', routerProductos);
 
 const port = 3000;
 
